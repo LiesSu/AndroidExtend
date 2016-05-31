@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.liessu.extender"
+<manifest package="com.liessu.sharedmulticlient"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name=".DemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <provider
-            android:authorities="com.liessu.extendlib.sharedmulti.SharedPreferencesProvider"
-            android:name="com.liessu.extendlib.sharedmulti.SharedPreferencesProvider"
-            android:exported="true"/>
     </application>
 
 </manifest>

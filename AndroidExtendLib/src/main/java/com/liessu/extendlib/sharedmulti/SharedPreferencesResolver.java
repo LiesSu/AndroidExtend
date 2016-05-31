@@ -39,7 +39,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
     }
 
     private void init(Context context) {
-        PREFERENCE_AUTHORITY = "SharedPreferencesProvider";
+        PREFERENCE_AUTHORITY = "com.liessu.extendlib.sharedmulti.SharedPreferencesProvider";
         BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
 
         if(this.context == null){
