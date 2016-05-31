@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            styledString.setSpan(clickableSpan, 103, 112, 0);
+//            styledString.setSpan(clickableSpan, 103, 112, 0);
 
 
 
