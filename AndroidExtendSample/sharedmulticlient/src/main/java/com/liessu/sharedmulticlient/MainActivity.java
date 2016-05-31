@@ -4,10 +4,12 @@ import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.liessu.extendlib.display.DisplayMeticsEx;
 import com.liessu.extendlib.sharedmulti.SharedPreferencesResolver;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this;
-
         final EditText editText = (android.widget.EditText) findViewById(R.id.value_edit);
         Button btnGet = (Button) findViewById(R.id.get_value);
         Button btnSet =  (Button) findViewById(R.id.set_value);
