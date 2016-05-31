@@ -31,9 +31,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.liessu.extendlib.sharedmulti.SharedPreferencesResolver;
+import com.liessu.extendlib.span.ClickableSpanEx;
+import com.liessu.extender.DemoApplication;
 import com.liessu.extender.R;
 import com.liessu.extender.StringUtil;
 
@@ -134,7 +139,29 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            SpannableString styledString
+            final EditText editText = (EditText) rootView.findViewById(R.id.value_edit);
+            Button btnGet = (Button) rootView.findViewById(R.id.get_value);
+            Button btnSet =  (Button) rootView.findViewById(R.id.set_value);
+            btnGet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(DemoApplication.getContext());
+                    String loglevel = sharedPreferences.getString("logLevel","3");
+                    Snackbar.make(view, "The Loglevel is "+loglevel , Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+
+            btnSet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String value = editText.getText().toString();
+                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(DemoApplication.getContext());
+                    sharedPreferences.edit().putString("logLevel",value).apply();
+                }
+            });
+
+                    SpannableString styledString
                     = new SpannableString("Large\n\n"     // index 0 - 5
                     + "Bold\n\n"          // index 7 - 11
                     + "Underlined\n\n"    // index 13 - 23
@@ -149,37 +176,27 @@ public class MainActivity extends AppCompatActivity {
 
             // make the text twice as large
             styledString.setSpan(new RelativeSizeSpan(2f), 0, 5, 0);
-
             // make text bold
             styledString.setSpan(new StyleSpan(Typeface.BOLD), 7, 11, 0);
-
             // underline text
             styledString.setSpan(new UnderlineSpan(), 13, 23, 0);
-
             // make text italic
             styledString.setSpan(new StyleSpan(Typeface.ITALIC), 25, 31, 0);
-
             styledString.setSpan(new StrikethroughSpan(), 33, 46, 0);
-
             // change text color
             styledString.setSpan(new ForegroundColorSpan(Color.GREEN), 48, 55, 0);
-
             // highlight text
             styledString.setSpan(new BackgroundColorSpan(Color.CYAN), 57, 68, 0);
-
             // superscript
             styledString.setSpan(new SuperscriptSpan(), 72, 83, 0);
             // make the superscript text smaller
             styledString.setSpan(new RelativeSizeSpan(0.5f), 72, 83, 0);
-
             // subscript
             styledString.setSpan(new SubscriptSpan(), 87, 96, 0);
             // make the subscript text smaller
             styledString.setSpan(new RelativeSizeSpan(0.5f), 87, 96, 0);
-
             // url
             styledString.setSpan(new URLSpan("http://www.google.com"), 98, 101, 0);
-
             // clickable text
             ClickableSpan clickableSpan = new ClickableSpan() {
 
@@ -190,22 +207,28 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
-
-//            styledString.setSpan(clickableSpan, 103, 112, 0);
-
-
+            styledString.setSpan(clickableSpan, 103, 112, 0);
 
             // this step is mandated for the url and clickable styles.
             textView.setMovementMethod(LinkMovementMethod.getInstance());
 
             // make it neat
-            textView.setGravity(Gravity.CENTER);
-            textView.setBackgroundColor(Color.WHITE);
+            textView.setGravity(Gravity.LEFT);
+            textView.setTextSize(14);
+//            textView.setBackgroundColor(Color.WHITE);
 
+            textView.setOnTouchListener(new ClickableSpanEx.Selector(true));
             textView.setText(StringUtil.getExample());
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(DemoApplication.getContext(),"My time - OnClickListener",Toast.LENGTH_SHORT).show();
+                }
+            });
 
             return rootView;
         }
+
     }
 
     /**
