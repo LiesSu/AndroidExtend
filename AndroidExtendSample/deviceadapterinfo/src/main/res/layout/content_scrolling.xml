@@ -38,10 +38,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@mipmap/ic_change"/>
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@mipmap/ic_change"/>-->
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

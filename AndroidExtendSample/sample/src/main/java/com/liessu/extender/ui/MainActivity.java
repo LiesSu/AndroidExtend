@@ -1,5 +1,7 @@
 package com.liessu.extender.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +38,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.liessu.extendlib.sharedmulti.SharedPreferencesProvider;
 import com.liessu.extendlib.sharedmulti.SharedPreferencesResolver;
 import com.liessu.extendlib.span.ClickableSpanEx;
 import com.liessu.extender.DemoApplication;
@@ -158,8 +161,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String value = editText.getText().toString();
-                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(DemoApplication.getContext());
+
+                    SharedPreferences sharedPreferences =getActivity().getSharedPreferences(
+                            SharedPreferencesProvider.SHARED_FILE_NAME , Context.MODE_PRIVATE);
                     sharedPreferences.edit().putString("logLevel",value).apply();
+//                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(DemoApplication.getContext());
+//                    sharedPreferences.edit().putString("logLevel",value).apply();
                 }
             });
 

@@ -1,5 +1,7 @@
 package com.example.deviceadapterinfo;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -46,7 +48,6 @@ public class ScrollingActivity extends AppCompatActivity {
                 }
             });
         }
-
 
     }
 

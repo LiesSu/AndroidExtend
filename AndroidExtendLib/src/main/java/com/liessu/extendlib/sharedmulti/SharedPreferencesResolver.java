@@ -32,10 +32,12 @@ public class SharedPreferencesResolver implements SharedPreferences {
     public static Uri BASE_URI;
 
     private Context context;
+    public SharedPreferences sharedPreferences;
     private List<OnSharedPreferenceChangeListener> changeListeners = new ArrayList<>();
 
     public SharedPreferencesResolver(Context context){
         this.context = context;
+        this.sharedPreferences = this;
     }
 
     private void init(Context context) {
@@ -45,7 +47,6 @@ public class SharedPreferencesResolver implements SharedPreferences {
         if(this.context == null){
             this.context = context;
         }
-
         this.context.getContentResolver().registerContentObserver(BASE_URI ,true , contentObserver);
     }
 
@@ -192,6 +193,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
          * {@link #commit} from <code>apply()</code>.
          */
         public void apply() {
+            Log.d(TAG,"Send value,size:"+values.size());
             context.getContentResolver().insert(getContentUri(context, KEY, TYPE), values);
         }
 
@@ -404,7 +406,9 @@ public class SharedPreferencesResolver implements SharedPreferences {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            Log.e(TAG , "Onchange uri:" + uri.toString());
+            for(OnSharedPreferenceChangeListener listener : changeListeners){
+                listener.onSharedPreferenceChanged(sharedPreferences,"Loglevel");
+            }
         }
     };
 
