@@ -20,106 +20,78 @@ import java.util.Map;
 /**
  * <p>A content provider for SharedPreferences  in multi process .
  * <p>Import SharedPreferencesProvider in your  server process/app , SharedPreferencesResolver in your
- * client process/app . Then , you will use SharedPreferencesResolver as same as SharedPreferences .
+ * client process/app . Then , use SharedPreferencesResolver as same as SharedPreferences .
  * <p/>
  * <p>NOTE : In server process/app , use SharedPreferences batter than SharedPreferencesResolver.
  */
 public class SharedPreferencesProvider extends ContentProvider
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    //Provider params
+    static final String PREFERENCE_AUTHORITY = "com.liessu.extendlib.sharedmulti.SharedPreferencesProvider";
+    static final Uri BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
     private static final String TAG = "SharedPrefProvider";
-    private static final String TYPE = "type";
-    private static final String KEY = "key";
+    public static String SHARED_FILE_NAME = "SharedMultiPreferences";
+
+    //Type names
     private static final String INT_TYPE = "integer";
     private static final String LONG_TYPE = "long";
     private static final String FLOAT_TYPE = "float";
     private static final String BOOLEAN_TYPE = "boolean";
     private static final String STRING_TYPE = "string";
-    private static final int MATCH_DATA = 0x010000;
-    /**
-     * Content provider authority
-     **/
-    public static String PREFERENCE_AUTHORITY;
-    /**
-     * The name of  shared preferences file , <i>public static member</i>
-     **/
-    public static String SHARED_FILE_NAME = "SharedContent";
-    public static Uri BASE_URI;
-    private static UriMatcher uriMatcher;
-    private SharedPreferences sharedPreferences;
-    private Context context;
 
+    //Uris
+    private static final String URI_ADD = "add";
+    private static final String URI_DEL = "delete/key/*";
+    private static final String URI_CLEAR = "clear";
+    private static final String URI_UPDATE = "update";
+    private static final String URI_QUERY = "query/key/*/default/*/type/*";
+    private static final String URI_CHANGE = "change/key/*";
+
+    //Uri matcher
+    private static final int MATCH_DATA = 0x01;
+    private static final int MATCH_ADD = 0x02;
+    private static final int MATCH_DEL = 0x03;
+    private static final int MATCH_CLEAR = 0x04;
+    private static final int MATCH_UPDATE = 0x05;
+    private static final int MATCH_QUERY = 0x06;
+
+    private Context context;
+    private UriMatcher uriMatcher;
+    private SharedPreferences sharedPreferences;
+
+    /**
+     * Receive authority .
+     */
     public static String getAuthority() {
         return PREFERENCE_AUTHORITY;
-    }
-
-    public static void setAuthority(String Authority) {
-        PREFERENCE_AUTHORITY = Authority;
-    }
-
-    private void onCreate(Context context) {
-        this.context = context;
-        PREFERENCE_AUTHORITY = getClass().getName();
-        BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
-        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PREFERENCE_AUTHORITY, "*/*", MATCH_DATA);
-
-        sharedPreferences = context.getSharedPreferences(SHARED_FILE_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public boolean onCreate() {
         if (uriMatcher == null) {
-            onCreate(getContext());
+            context = getContext();
+            //Construct UriMatcher
+            Log.d(TAG,"Authority is "+PREFERENCE_AUTHORITY);
+            uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_ADD, MATCH_ADD);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_CLEAR, MATCH_CLEAR);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_UPDATE, MATCH_UPDATE);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_DEL, MATCH_DEL);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_QUERY, MATCH_QUERY);
+
+            // To subscribe to SharedPreferences changes state
+            sharedPreferences = context.getSharedPreferences(SHARED_FILE_NAME, Context.MODE_PRIVATE);
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         }
+
         return true;
     }
 
-
     /**
-     * Implement this to handle query requests from clients with support for cancellation.
+     * Handle query requests from clients with support for cancellation.
      * This method can be called from multiple threads, as described in
      * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
      * and Threads</a>.
-     * <p/>
-     * Example client call:<p>
-     * <pre>// Request a specific record.
-     * Cursor managedCursor = managedQuery(
-     * ContentUris.withAppendedId(Contacts.People.CONTENT_URI, 2),
-     * projection,    // Which columns to return.
-     * null,          // WHERE clause.
-     * null,          // WHERE clause value substitution
-     * People.NAME + " ASC");   // Sort order.</pre>
-     * Example implementation:<p>
-     * <pre>// SQLiteQueryBuilder is a helper class that creates the
-     * // proper SQL syntax for us.
-     * SQLiteQueryBuilder qBuilder = new SQLiteQueryBuilder();
-     *
-     * // Set the table we're querying.
-     * qBuilder.setTables(DATABASE_TABLE_NAME);
-     *
-     * // If the query ends in a specific record number, we're
-     * // being asked for a specific record, so set the
-     * // WHERE clause in our query.
-     * if((URI_MATCHER.match(uri)) == SPECIFIC_MESSAGE){
-     * qBuilder.appendWhere("_id=" + uri.getPathLeafId());
-     * }
-     *
-     * // Make the query.
-     * Cursor c = qBuilder.query(mDb,
-     * projection,
-     * selection,
-     * selectionArgs,
-     * groupBy,
-     * having,
-     * sortOrder);
-     * c.setNotificationUri(getContext().getContentResolver(), uri);
-     * return c;</pre>
-     * <p/>
-     * If you implement this method then you must also implement the version of
-     * {@link #query(Uri, String[], String, String[], String)} that does not take a cancellation
-     * signal to ensure correct operation on older versions of the Android Framework in
-     * which the cancellation signal overload was not available.
      *
      * @param uri           The URI to query. This will be the full URI sent by the client;
      *                      if the client is requesting a specific record, the URI will end in a record number
@@ -141,28 +113,36 @@ public class SharedPreferencesProvider extends ContentProvider
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        MatrixCursor cursor = null;
-        switch (uriMatcher.match(uri)) {
-            case MATCH_DATA:
-                final String key = uri.getPathSegments().get(0);
-                final String type = uri.getPathSegments().get(1);
+        //  content://PREFERENCE_AUTHORITY/query/key/#/default/#/type/#
 
-                Log.d(TAG, "Query data , key:" + key);
+        Log.d(TAG, "Query uri : " + uri.toString());
+        MatrixCursor cursor;
+        switch (uriMatcher.match(uri)) {
+            case MATCH_QUERY:
+                //Receive query key and type , type is needed.
+                final String key = uri.getPathSegments().get(2);
+                final String defaultValue = uri.getPathSegments().get(4);
+                final String type = uri.getPathSegments().get(6);
+
+                Log.d(TAG, "Query data , key:" + key + " type:" + type);
                 cursor = new MatrixCursor(new String[]{key});
+                //Shared preferences isn't contain key , return null .
                 if (!sharedPreferences.contains(key))
                     return cursor;
+
+                Object object;
                 MatrixCursor.RowBuilder rowBuilder = cursor.newRow();
-                Object object = null;
+                //Save value in Object instance
                 if (STRING_TYPE.equals(type)) {
-                    object = sharedPreferences.getString(key, null);
+                    object = sharedPreferences.getString(key, defaultValue);
                 } else if (BOOLEAN_TYPE.equals(type)) {
-                    object = sharedPreferences.getBoolean(key, false) ? 1 : 0;
+                    object = sharedPreferences.getBoolean(key, Boolean.valueOf(defaultValue)) ? 1 : 0;
                 } else if (LONG_TYPE.equals(type)) {
-                    object = sharedPreferences.getLong(key, 0L);
+                    object = sharedPreferences.getLong(key, Long.valueOf(defaultValue));
                 } else if (INT_TYPE.equals(type)) {
-                    object = sharedPreferences.getInt(key, 0);
+                    object = sharedPreferences.getInt(key, Integer.valueOf(defaultValue));
                 } else if (FLOAT_TYPE.equals(type)) {
-                    object = sharedPreferences.getFloat(key, 0f);
+                    object = sharedPreferences.getFloat(key, Float.valueOf(defaultValue));
                 } else {
                     throw new IllegalArgumentException("Unsupported type " + uri);
                 }
@@ -174,9 +154,172 @@ public class SharedPreferencesProvider extends ContentProvider
         return cursor;
     }
 
+    /**
+     * Handle requests to insert a new row.
+     * As a courtesy, call {@link ContentResolver#notifyChange(android.net.Uri, android.database.ContentObserver) notifyChange()}
+     * after inserting.
+     * This method can be called from multiple threads, as described in
+     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
+     * and Threads</a>.
+     *
+     * @param uri    The content:// URI of the insertion request. This must not be {@code null}.
+     * @param values A set of column_name/value pairs to add to the database.
+     *               This must not be {@code null}.
+     * @return The URI for the newly inserted item.
+     */
+    @Nullable
+    @Override
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
+        //content://PREFERENCE_AUTHORITY/add
+
+        Log.d(TAG, "Insert uri : " + uri.toString());
+        switch (uriMatcher.match(uri)) {
+            case MATCH_ADD:
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                //Insert/update all key-value map from ContentValues to SharedPreferences.
+                for (Map.Entry<String, Object> entry : values.valueSet()) {
+                    final String key = entry.getKey();
+                    final Object value = entry.getValue();
+                    //if value is null , remove key.
+                    if (value == null) {
+                        editor.remove(key);
+                    } else if (value instanceof String)
+                        editor.putString(key, (String) value);
+                    else if (value instanceof Boolean)
+                        editor.putBoolean(key, (Boolean) value);
+                    else if (value instanceof Long)
+                        editor.putLong(key, (Long) value);
+                    else if (value instanceof Integer)
+                        editor.putInt(key, (Integer) value);
+                    else if (value instanceof Float)
+                        editor.putFloat(key, (Float) value);
+                    else {
+                        throw new IllegalArgumentException("Unsupported type " + uri);
+                    }
+                }
+
+                //Judge running Android devices version to apply or commit changes.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+                    editor.apply();
+                } else {
+                    editor.commit();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported uri " + uri);
+        }
+
+        return null;
+    }
 
     /**
-     * Implement this to handle requests for the MIME type of the data at the
+     * Handle requests to update one or more rows.
+     * This method can be called from multiple threads, as described in
+     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
+     * and Threads</a>.
+     *
+     * @param uri       The URI to query. This can potentially have a record ID if this
+     *                  is an update request for a specific record.
+     * @param values    A set of column_name/value pairs to update in the database.
+     *                  This must not be {@code null}.
+     * @param selection An optional filter to match rows to update.
+     * @return the number of rows affected.
+     * @see {@link #insert(Uri, ContentValues)}
+     */
+    @Override
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        //content://PREFERENCE_AUTHORITY/update
+
+        Log.d(TAG, "Update uri : " + uri.toString());
+        switch (uriMatcher.match(uri)) {
+            case MATCH_UPDATE:
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                //Insert/update all key-value map from ContentValues to SharedPreferences.
+                for (Map.Entry<String, Object> entry : values.valueSet()) {
+                    final String key = entry.getKey();
+                    final Object value = entry.getValue();
+                    //if value is null , remove key.
+                    if (value == null)
+                        editor.remove(key);
+                    else if (value instanceof String)
+                        editor.putString(key, (String) value);
+                    else if (value instanceof Boolean)
+                        editor.putBoolean(key, (Boolean) value);
+                    else if (value instanceof Long)
+                        editor.putLong(key, (Long) value);
+                    else if (value instanceof Integer)
+                        editor.putInt(key, (Integer) value);
+                    else if (value instanceof Float)
+                        editor.putFloat(key, (Float) value);
+                    else {
+                        throw new IllegalArgumentException("Unsupported type " + uri);
+                    }
+                }
+
+                //Judge running Android devices version to apply or commit changes.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+                    editor.apply();
+                } else {
+                    editor.commit();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported uri " + uri);
+        }
+
+        return values.size();
+    }
+
+    /**
+     * Handle requests to delete one or more rows.
+     * This method can be called from multiple threads, as described in
+     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
+     * and Threads</a>.
+     * <p/>
+     * <p>The implementation is responsible for parsing out a row ID at the end
+     * of the URI, if a specific row is being deleted. That is, the client would
+     * pass in <code>content://contacts/people/22</code> and the implementation is
+     * responsible for parsing the record number (22) when creating a SQL statement.
+     *
+     * @param uri       The full URI to query, including a row ID (if a specific record is requested).
+     * @param selection An optional restriction to apply to rows when deleting.
+     * @return The number of rows affected.
+     */
+    @Override
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        //putXxxx(key,null) also can remove key
+        //content://PREFERENCE_AUTHORITY/remove
+        //content://PREFERENCE_AUTHORITY/delete/key/#
+
+        Log.d(TAG, "Clear SharedPreferences !");
+        switch (uriMatcher.match(uri)) {
+            case MATCH_CLEAR://Clear data
+                Log.d(TAG, "Clear all data");
+                int count = sharedPreferences.getAll().size();
+                sharedPreferences.edit().clear().commit();
+                return count;
+            case MATCH_DEL://Delete one key
+                String key = uri.getPathSegments().get(2);
+                Log.d(TAG, "Delete data , key:" + key);
+                //Shared preferences isn't contain key , return 0 .
+                if (!sharedPreferences.contains(key))
+                    return 0;
+
+                //Judge running Android devices version to apply or commit changes.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+                    sharedPreferences.edit().remove(key).apply();
+                } else {
+                    sharedPreferences.edit().remove(key).commit();
+                }
+                return 1;
+            default:
+                throw new IllegalArgumentException("Unsupported uri " + uri);
+        }
+
+    }
+
+    /**
+     * Handle requests for the MIME type of the data at the
      * given URI.  The returned MIME type should start with
      * <code>vnd.android.cursor.item</code> for a single record,
      * or <code>vnd.android.cursor.dir/</code> for multiple items.
@@ -200,115 +343,6 @@ public class SharedPreferencesProvider extends ContentProvider
     }
 
     /**
-     * Implement this to handle requests to insert a new row.
-     * As a courtesy, call {@link ContentResolver#notifyChange(android.net.Uri, android.database.ContentObserver) notifyChange()}
-     * after inserting.
-     * This method can be called from multiple threads, as described in
-     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
-     * and Threads</a>.
-     *
-     * @param uri    The content:// URI of the insertion request. This must not be {@code null}.
-     * @param values A set of column_name/value pairs to add to the database.
-     *               This must not be {@code null}.
-     * @return The URI for the newly inserted item.
-     */
-    @Nullable
-    @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values) {
-        Log.d(TAG, "Insert uri : " + uri.toString());
-        switch (uriMatcher.match(uri)) {
-            case MATCH_DATA:
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                for (Map.Entry<String, Object> entry : values.valueSet()) {
-                    final Object value = entry.getValue();
-                    final String key = entry.getKey();
-                    if (value == null) {
-                        editor.remove(key);
-                    } else if (value instanceof String)
-                        editor.putString(key, (String) value);
-                    else if (value instanceof Boolean)
-                        editor.putBoolean(key, (Boolean) value);
-                    else if (value instanceof Long)
-                        editor.putLong(key, (Long) value);
-                    else if (value instanceof Integer)
-                        editor.putInt(key, (Integer) value);
-                    else if (value instanceof Float)
-                        editor.putFloat(key, (Float) value);
-                    else {
-                        throw new IllegalArgumentException("Unsupported type " + uri);
-                    }
-                }
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
-                    editor.apply();
-                } else {
-                    editor.commit();
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported uri " + uri);
-        }
-
-        return null;
-    }
-
-
-    /**
-     * Implement this to handle requests to delete one or more rows.
-     * The implementation should apply the selection clause when performing
-     * deletion, allowing the operation to affect multiple rows in a directory.
-     * As a courtesy, call {@link ContentResolver#notifyChange(android.net.Uri, android.database.ContentObserver) notifyChange()}
-     * after deleting.
-     * This method can be called from multiple threads, as described in
-     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
-     * and Threads</a>.
-     * <p/>
-     * <p>The implementation is responsible for parsing out a row ID at the end
-     * of the URI, if a specific row is being deleted. That is, the client would
-     * pass in <code>content://contacts/people/22</code> and the implementation is
-     * responsible for parsing the record number (22) when creating a SQL statement.
-     *
-     * @param uri       The full URI to query, including a row ID (if a specific record is requested).
-     * @param selection An optional restriction to apply to rows when deleting.
-     * @return The number of rows affected.
-     */
-    @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        //putXxxx(key,null) can remove single key-value map
-        Log.d(TAG, "Clear SharedPreferences !");
-        switch (uriMatcher.match(uri)) {
-            case MATCH_DATA:
-                sharedPreferences.edit().clear().commit();
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported uri " + uri);
-        }
-
-        return 0;
-    }
-
-    /**
-     * Implement this to handle requests to update one or more rows.
-     * The implementation should update all rows matching the selection
-     * to set the columns according to the provided values map.
-     * As a courtesy, call {@link ContentResolver#notifyChange(android.net.Uri, android.database.ContentObserver) notifyChange()}
-     * after updating.
-     * This method can be called from multiple threads, as described in
-     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html#Threads">Processes
-     * and Threads</a>.
-     *
-     * @param uri       The URI to query. This can potentially have a record ID if this
-     *                  is an update request for a specific record.
-     * @param values    A set of column_name/value pairs to update in the database.
-     *                  This must not be {@code null}.
-     * @param selection An optional filter to match rows to update.
-     * @return the number of rows affected.
-     */
-    @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Called when a shared preference is changed, added, or removed. This
      * may be called even if a preference is set to its existing value.
      * <p/>
@@ -320,14 +354,27 @@ public class SharedPreferencesProvider extends ContentProvider
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(TAG, "onSharedPreferenceChanged , key =" + key);
-        context.getContentResolver().notifyChange(getContentUri(getContext(),KEY,TYPE),null);
+        //content://PREFERENCE_AUTHORITY/change/key/#
+
+        //Notify shared preferences change to resolver .
+        Uri changeUri = BASE_URI.buildUpon().path(getUriPath(URI_CHANGE, key)).build();
+
+        Log.d(TAG, "onSharedPreferenceChanged , changeUri =" + changeUri);
+        context.getContentResolver().notifyChange(changeUri, null);
     }
 
-    private Uri getContentUri(Context context, String key, String type) {
-        if (BASE_URI == null) {
-            onCreate(context);
+    /**
+     * 生成Uri路径
+     *
+     * @param path 路径模板
+     * @param args 参数集
+     * @return 路径
+     */
+    private String getUriPath(String path, String... args) {
+        for (String arg : args) {
+            path = path.replaceFirst("\\*", arg);
         }
-        return BASE_URI.buildUpon().appendPath(key).appendPath(type).build();
+        return path;
     }
+
 }

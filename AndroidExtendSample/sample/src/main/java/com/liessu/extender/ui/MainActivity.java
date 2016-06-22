@@ -146,13 +146,15 @@ public class MainActivity extends AppCompatActivity {
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             final EditText editText = (EditText) rootView.findViewById(R.id.value_edit);
             Button btnGet = (Button) rootView.findViewById(R.id.get_value);
-            Button btnSet =  (Button) rootView.findViewById(R.id.set_value);
+            Button btnSet = (Button) rootView.findViewById(R.id.set_value);
             btnGet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(DemoApplication.getContext());
-                    String loglevel = sharedPreferences.getString("logLevel","3");
-                    Snackbar.make(view, "The Loglevel is "+loglevel , Snackbar.LENGTH_LONG)
+                    //server端APP，建议直接使用SharedPreferences设置与调用即可
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                            SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
+                    String loglevel = sharedPreferences.getString("logLevel", "3");
+                    Snackbar.make(view, "The local Loglevel is " + loglevel, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             });
@@ -161,16 +163,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String value = editText.getText().toString();
-
-                    SharedPreferences sharedPreferences =getActivity().getSharedPreferences(
-                            SharedPreferencesProvider.SHARED_FILE_NAME , Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putString("logLevel",value).apply();
-//                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(DemoApplication.getContext());
-//                    sharedPreferences.edit().putString("logLevel",value).apply();
+                    //server端APP，建议直接使用SharedPreferences设置与调用即可
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                            SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
+                    sharedPreferences.edit().putString("logLevel", value).apply();
                 }
             });
 
-                    SpannableString styledString
+            SpannableString styledString
                     = new SpannableString("Large\n\n"     // index 0 - 5
                     + "Bold\n\n"          // index 7 - 11
                     + "Underlined\n\n"    // index 13 - 23
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(DemoApplication.getContext(),"My time - OnClickListener",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DemoApplication.getContext(), "My time - OnClickListener", Toast.LENGTH_SHORT).show();
                 }
             });
 

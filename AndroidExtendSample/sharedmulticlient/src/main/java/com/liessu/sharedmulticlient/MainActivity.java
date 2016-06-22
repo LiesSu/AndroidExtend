@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setContentView(R.layout.activity_main);
 
         context = this;
+        final SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
         editText = (android.widget.EditText) findViewById(R.id.value_edit);
         Button btnGet = (Button) findViewById(R.id.get_value);
         Button btnSet =  (Button) findViewById(R.id.set_value);
@@ -33,9 +36,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             btnGet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
                     String loglevel = sharedPreferences.getString("logLevel","3");
-                    Snackbar.make(view, "The Loglevel is "+loglevel , Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, "The remote Loglevel is "+loglevel , Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             });
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         value = editText.getText().toString();
                     }
 
-                    SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
                     sharedPreferences.edit().putString("logLevel",value).apply();
                 }
             });
@@ -59,15 +60,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
+        Log.d("MainActivity" , "onSharedPreferenceChanged is called");
         Message msg = new Handler(Looper.getMainLooper()){
             @Override
             public void dispatchMessage(Message msg) {
                 super.dispatchMessage(msg);
-//                SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
-//                editText.setText(sharedPreferences.getString("logLevel","00000"));
+                String text = sharedPreferences.getString((String) msg.obj,"00000");
+                editText.setText(text);
             }
         }.obtainMessage();
+        msg.obj = key;
         msg.sendToTarget();
     }
 }
