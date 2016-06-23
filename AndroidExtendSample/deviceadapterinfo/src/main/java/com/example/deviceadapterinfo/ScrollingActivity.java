@@ -1,9 +1,5 @@
 package com.example.deviceadapterinfo;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.liessu.extendlib.display.DisplayMeticsEx;
+import com.liessu.extendlib.display.DisplayMetricsEx;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -26,11 +22,11 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final DisplayMeticsEx displayMeticsEx = new DisplayMeticsEx(this);
+        final DisplayMetricsEx displayMetricsEx = new DisplayMetricsEx(this);
         final TextView displayTextView = (TextView) findViewById(R.id.display_info);
         final TextView deviceTextView = (TextView) findViewById(R.id.device_info);
         if (displayTextView != null) {
-            displayTextView.setText(displayMeticsEx.toString());
+            displayTextView.setText(displayMetricsEx.toString());
         }
         if (deviceTextView != null) {
             deviceTextView.setText(getDeviceInfo());
@@ -43,7 +39,7 @@ public class ScrollingActivity extends AppCompatActivity {
                     Snackbar.make(view, "使用隐藏属性获得屏幕信息", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     if (displayTextView != null) {
-                        displayTextView.setText(displayMeticsEx.getNonCompatString());
+                        displayTextView.setText(displayMetricsEx.getNonCompatString());
                     }
                 }
             });

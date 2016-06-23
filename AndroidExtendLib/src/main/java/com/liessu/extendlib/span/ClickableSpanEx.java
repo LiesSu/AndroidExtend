@@ -100,7 +100,7 @@ public abstract class ClickableSpanEx extends ClickableSpan {
      *
      * @param v                The view the touch event has been dispatched to.
      * @param event            The MotionEvent object containing full information about the event.
-     * @param isAllowIntercept Is allow ClickableSpanEx intercept the touch event ？
+     * @param isAllowIntercept Is allow ClickableSpanEx intercept the touch event
      * @return True if the listener has consumed the event , false otherwise.
      */
     public static boolean onTouch(View v, MotionEvent event, boolean isAllowIntercept) {

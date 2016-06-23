@@ -330,11 +330,11 @@ public class SharedPreferencesResolver implements SharedPreferences {
     }
 
     /**
-     * 生成Uri路径
+     * Create Uri
      *
-     * @param path 路径模板
-     * @param args 参数集
-     * @return 路径
+     * @param path uri path
+     * @param args  param list
+     * @return path
      */
     private String getUriPath(String path, String... args) {
         for (String arg : args) {
