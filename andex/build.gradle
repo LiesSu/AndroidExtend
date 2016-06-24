@@ -6,7 +6,7 @@ version = "1.0.1"
 android {
     compileSdkVersion 23
     buildToolsVersion '22.0.1'
-    resourcePrefix "extendlib__"	//这个随便填
+    resourcePrefix "andex"	//这个随便填
 
     defaultConfig {
         minSdkVersion 15
@@ -29,7 +29,7 @@ dependencies {
 
 def siteUrl = 'https://github.com/LiesSu/AndroidExtend'      // 项目的主页
 def gitUrl = 'https://github.com/LiesSu/AndroidExtend.git'   // Git仓库的url
-group = "com.liessu.extendlib"                                        // Maven Group ID for the artifact，一般填你唯一的包名
+group = "com.liessu.andex"                                        // Maven Group ID for the artifact，一般填你唯一的包名
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
@@ -87,7 +87,7 @@ bintray {
     pkg {
         repo = "maven"
         group = group
-        name = "LsExtend"	//发布到JCenter上的项目名字
+        name = "andex"	//发布到JCenter上的项目名字
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
