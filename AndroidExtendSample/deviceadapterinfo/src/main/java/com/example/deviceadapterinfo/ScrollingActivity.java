@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.liessu.extendlib.display.DisplayMetricsEx;
+import com.liessu.andex.display.DisplayMetricsEx;
 
 public class ScrollingActivity extends AppCompatActivity {
 

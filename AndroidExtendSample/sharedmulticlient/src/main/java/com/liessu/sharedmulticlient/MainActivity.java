@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.liessu.extendlib.sharedmulti.SharedPreferencesResolver;
+import com.liessu.andex.sharedmulti.SharedPreferencesResolver;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private Context context;

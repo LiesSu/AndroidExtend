@@ -7,8 +7,8 @@ import android.text.style.DynamicDrawableSpan;
 import android.view.View;
 import android.widget.Toast;
 
-import com.liessu.extendlib.span.ClickableSpanEx;
-import com.liessu.extendlib.span.SpannableStringBuilderEx;
+import com.liessu.andex.span.ClickableSpanEx;
+import com.liessu.andex.span.SpannableStringBuilderEx;
 
 
 /**

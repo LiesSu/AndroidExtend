@@ -1,4 +1,4 @@
-package com.liessu.extendlib.display;
+package com.liessu.andex.display;
 
 import android.app.Activity;
 import android.content.Context;

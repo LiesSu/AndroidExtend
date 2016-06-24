@@ -1,4 +1,4 @@
-package com.liessu.extendlib.sharedmulti;
+package com.liessu.andex.sharedmulti;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public class SharedPreferencesResolver implements SharedPreferences {
     //Provider params
-    static final String PREFERENCE_AUTHORITY = "com.liessu.extendlib.sharedmulti.SharedPreferencesProvider";
+    static final String PREFERENCE_AUTHORITY = "com.liessu.andex.sharedmulti.SharedPreferencesProvider";
     static final Uri BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
     private static final String TAG = "SharedPrefResolver";
     //Type names

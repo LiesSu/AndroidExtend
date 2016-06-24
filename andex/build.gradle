@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.0.0"
+version = "1.0.1"
 android {
     compileSdkVersion 23
     buildToolsVersion '22.0.1'
@@ -86,6 +86,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
+        group = group
         name = "LsExtend"	//发布到JCenter上的项目名字
         websiteUrl = siteUrl
         vcsUrl = gitUrl

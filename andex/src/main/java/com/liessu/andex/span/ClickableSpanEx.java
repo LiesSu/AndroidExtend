@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.liessu.extendlib.span;
+package com.liessu.andex.span;
 
 
 import android.graphics.Color;

@@ -38,9 +38,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.liessu.extendlib.sharedmulti.SharedPreferencesProvider;
-import com.liessu.extendlib.sharedmulti.SharedPreferencesResolver;
-import com.liessu.extendlib.span.ClickableSpanEx;
+import com.liessu.andex.sharedmulti.SharedPreferencesProvider;
+import com.liessu.andex.span.ClickableSpanEx;
 import com.liessu.extender.DemoApplication;
 import com.liessu.extender.R;
 import com.liessu.extender.StringUtil;

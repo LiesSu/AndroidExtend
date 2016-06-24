@@ -21,8 +21,8 @@
         </activity>
 
         <provider
-            android:authorities="com.liessu.extendlib.sharedmulti.SharedPreferencesProvider"
-            android:name="com.liessu.extendlib.sharedmulti.SharedPreferencesProvider"
+            android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+            android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
             android:exported="true"/>
     </application>
 
