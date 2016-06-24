@@ -21,19 +21,16 @@ Extensional class of Android .
             android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
             android:exported="true"/>
 ```
-
 4. 在server端直接使用SharedPreferences进行数据操作即可：
 ```
 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
                             SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
 ```
-
 5. 在Client端实例化SharedPreferences时，使用SharedPreferencesResolver实例化便可以轻松地实现与server端数据的共享：
 ```
 //SharedPreferencesResolver实现了SharedPreferences大部分接口，直接按照你的使用习惯使用即可
 SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
 ```
-
 6. 如果需要订阅SharedPreferences内的数据变化，做法与普通SharedPreferences别无二致：
 ```
 @Override
