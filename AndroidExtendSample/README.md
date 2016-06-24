@@ -12,32 +12,32 @@ Extensional class of Android .
 
 
 ### Introduction
-1. 在需要实现数据共享的module中，引入依赖包；
-2. 选择一个进程或者module作为数据共享server端；
-3. 在server端对应module的AndroidManifest.xml加入以下代码，注册ContentProvider组件：
+1.在需要实现数据共享的module中，引入依赖包；
+2.选择一个进程或者module作为数据共享server端；
+3.在server端对应module的AndroidManifest.xml加入以下代码，注册ContentProvider组件：
 ```
 <provider
-            android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
-            android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
-            android:exported="true"/>
+      android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+      android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+      android:exported="true"/>
 ```
-4. 在server端直接使用SharedPreferences进行数据操作即可：
+4.在server端直接使用SharedPreferences进行数据操作即可：
 ```
 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                            SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
+      SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
 ```
-5. 在Client端实例化SharedPreferences时，使用SharedPreferencesResolver实例化便可以轻松地实现与server端数据的共享：
+5.在Client端实例化SharedPreferences时，使用SharedPreferencesResolver实例化便可以轻松地实现与server端数据的共享：
 ```
 //SharedPreferencesResolver实现了SharedPreferences大部分接口，直接按照你的使用习惯使用即可
 SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
 ```
-6. 如果需要订阅SharedPreferences内的数据变化，做法与普通SharedPreferences别无二致：
+6.如果需要订阅SharedPreferences内的数据变化，做法与普通SharedPreferences别无二致：
 ```
 @Override
-    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
-        Log.d( TAG , "onSharedPreferenceChanged is called");
-        //do something
-    }
+public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
+     Log.d( TAG , "onSharedPreferenceChanged is called");
+     //do something...
+}
 ```
 
 

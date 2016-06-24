@@ -2,47 +2,47 @@
 Extensional class of Android .
 
 
-## SharedPreferencesÍØÕ¹Àà
+## SharedPreferencesæ‹“å±•ç±»
 
-* ÕûºÏContentProviderÓëSharedPreferences¡£
-* Ê¹ÓÃContentProvider/ContentResolver×÷ÎªÊı¾İ¹²ÏíµÄÔØÌå£¬ÃÖ²¹ÁËSharedPreference¼«¶È±©Á¦ÇÒ½ø³Ì²»°²È«µÄÊı¾İ¹²Ïí·½Ê½¡£
-* Ò»¸öserver¶Ë£¬¶à¸öclient¶Ë¡£ËæĞÔ¹²Ïí¡£
-* ÔÚClient¶ËÊ¹ÓÃ£¬³ıÈ¥ÊµÀı»¯²½ÖèÍâ¼¸ºõÓëSharedPreferencesÏà²îÎŞ¼¸¡£
-* Ö¼ÔÚ¹²Ïí¼òµ¥µÄ¼üÖµ¶ÔÊı¾İ£¬±ã½İ¼òµ¥¡££¨Èç¹ûĞèÒª¹²Ïí¸´ÔÓÊı¾İ£¬ÇëÊ¹ÓÃAndroid±ê×¼Êı¾İ¹²Ïí·½Ê½£©
+* æ•´åˆContentProviderä¸SharedPreferencesã€‚
+* ä½¿ç”¨ContentProvider/ContentResolverä½œä¸ºæ•°æ®å…±äº«çš„è½½ä½“ï¼Œå¼¥è¡¥äº†SharedPreferenceæåº¦æš´åŠ›ä¸”è¿›ç¨‹ä¸å®‰å…¨çš„æ•°æ®å…±äº«æ–¹å¼ã€‚
+* ä¸€ä¸ªserverç«¯ï¼Œå¤šä¸ªclientç«¯ã€‚éšæ€§å…±äº«ã€‚
+* åœ¨Clientç«¯ä½¿ç”¨ï¼Œé™¤å»å®ä¾‹åŒ–æ­¥éª¤å¤–å‡ ä¹ä¸SharedPreferencesç›¸å·®æ— å‡ ã€‚
+* æ—¨åœ¨å…±äº«ç®€å•çš„é”®å€¼å¯¹æ•°æ®ï¼Œä¾¿æ·ç®€å•ã€‚ï¼ˆå¦‚æœéœ€è¦å…±äº«å¤æ‚æ•°æ®ï¼Œè¯·ä½¿ç”¨Androidæ ‡å‡†æ•°æ®å…±äº«æ–¹å¼ï¼‰
 
 
 ### Introduction
-1. ÔÚĞèÒªÊµÏÖÊı¾İ¹²ÏíµÄmoduleÖĞ£¬ÒıÈëÒÀÀµ°ü£»
-2. Ñ¡ÔñÒ»¸ö½ø³Ì»òÕßmodule×÷ÎªÊı¾İ¹²Ïíserver¶Ë£»
-3. ÔÚserver¶Ë¶ÔÓ¦moduleµÄAndroidManifest.xml¼ÓÈëÒÔÏÂ´úÂë£¬×¢²áContentProvider×é¼ş£º
+1.åœ¨éœ€è¦å®ç°æ•°æ®å…±äº«çš„moduleä¸­ï¼Œå¼•å…¥ä¾èµ–åŒ…ï¼›
+2.é€‰æ‹©ä¸€ä¸ªè¿›ç¨‹æˆ–è€…moduleä½œä¸ºæ•°æ®å…±äº«serverç«¯ï¼›
+3.åœ¨serverç«¯å¯¹åº”moduleçš„AndroidManifest.xmlåŠ å…¥ä»¥ä¸‹ä»£ç ï¼Œæ³¨å†ŒContentProviderç»„ä»¶ï¼š
 ```
 <provider
-            android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
-            android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
-            android:exported="true"/>
+      android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+      android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+      android:exported="true"/>
 ```
-4. ÔÚserver¶ËÖ±½ÓÊ¹ÓÃSharedPreferences½øĞĞÊı¾İ²Ù×÷¼´¿É£º
+4.åœ¨serverç«¯ç›´æ¥ä½¿ç”¨SharedPreferencesè¿›è¡Œæ•°æ®æ“ä½œå³å¯ï¼š
 ```
 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                            SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
+      SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
 ```
-5. ÔÚClient¶ËÊµÀı»¯SharedPreferencesÊ±£¬Ê¹ÓÃSharedPreferencesResolverÊµÀı»¯±ã¿ÉÒÔÇáËÉµØÊµÏÖÓëserver¶ËÊı¾İµÄ¹²Ïí£º
+5.åœ¨Clientç«¯å®ä¾‹åŒ–SharedPreferencesæ—¶ï¼Œä½¿ç”¨SharedPreferencesResolverå®ä¾‹åŒ–ä¾¿å¯ä»¥è½»æ¾åœ°å®ç°ä¸serverç«¯æ•°æ®çš„å…±äº«ï¼š
 ```
-//SharedPreferencesResolverÊµÏÖÁËSharedPreferences´ó²¿·Ö½Ó¿Ú£¬Ö±½Ó°´ÕÕÄãµÄÊ¹ÓÃÏ°¹ßÊ¹ÓÃ¼´¿É
+//SharedPreferencesResolverå®ç°äº†SharedPreferenceså¤§éƒ¨åˆ†æ¥å£ï¼Œç›´æ¥æŒ‰ç…§ä½ çš„ä½¿ç”¨ä¹ æƒ¯ä½¿ç”¨å³å¯
 SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
 ```
-6. Èç¹ûĞèÒª¶©ÔÄSharedPreferencesÄÚµÄÊı¾İ±ä»¯£¬×ö·¨ÓëÆÕÍ¨SharedPreferences±ğÎŞ¶şÖÂ£º
+6.å¦‚æœéœ€è¦è®¢é˜…SharedPreferenceså†…çš„æ•°æ®å˜åŒ–ï¼Œåšæ³•ä¸æ™®é€šSharedPreferencesåˆ«æ— äºŒè‡´ï¼š
 ```
 @Override
-    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
-        Log.d( TAG , "onSharedPreferenceChanged is called");
-        //do something
-    }
+public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
+     Log.d( TAG , "onSharedPreferenceChanged is called");
+     //do something...
+}
 ```
 
 
 ### Download
-Ê¹ÓÃGradleÒıÈë¼´¿É£º
+ä½¿ç”¨Gradleå¼•å…¥å³å¯ï¼š
 ```
 compile 'com.liessu.andex:andex:1.0.1'
 ```
