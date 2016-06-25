@@ -568,7 +568,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
          * <p/>
          * Add：Call content provider method immediately. apply or commit is not required for this case
          * So it's sync method.
-         *ttttttt
+         *
          * @return Returns a reference to the same Editor object, so you can
          * chain put calls together.
          */
