@@ -570,7 +570,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
          * So it's sync method.
          *
          * @return Returns a reference to the same Editor object, so you can
-         * chain put calls together.
+         * chain put calls together.xxxx
          */
         public Editor clear() {
             Log.d(TAG, "Clear uri : " + BASE_URI.buildUpon().path(URI_CLEAR).build().toString());
