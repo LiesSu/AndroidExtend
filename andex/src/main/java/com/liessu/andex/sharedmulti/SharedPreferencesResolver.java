@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,14 +36,13 @@ public class SharedPreferencesResolver implements SharedPreferences {
     //Uris
     private static final String URI_ADD = "add";
     private static final String URI_DEL = "delete/key/*";
+    private static final String URI_CONTAINS = "contains/key/*";
     private static final String URI_CLEAR = "clear";
     private static final String URI_UPDATE = "update";
     private static final String URI_QUERY = "query/key/*/default/*/type/*";
+    private static final String URI_QUERY_ALL = "queryAll";
     private static final String URI_CHANGE = "change/key/*";
     private static final int MATCH_CHANGE = 0x01;
-
-    private static final String TYPE = "type";
-    private static final String KEY = "key";
 
     private Context context;
     private UriMatcher uriMatcher;
@@ -126,6 +126,25 @@ public class SharedPreferencesResolver implements SharedPreferences {
         context.getContentResolver().registerContentObserver(BASE_URI, true, contentObserver);
     }
 
+
+    /****************************************************************************************************
+     Static helper method
+     ******************************************************************************************************/
+
+    private static Map<String , ?> getAllValue(Cursor cursor){
+        if(cursor == null || cursor.isClosed())
+            return null;
+
+        Map<String , String > mapAll = new HashMap<>();
+        if(cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                mapAll.put(cursor.getString(0),cursor.getString(1));
+                cursor.moveToNext();
+            }
+        }
+        Log.e(TAG , mapAll.toString());
+        return mapAll;
+    }
 
 
     private static String getStringValue(Cursor cursor, String def) {
@@ -259,11 +278,6 @@ public class SharedPreferencesResolver implements SharedPreferences {
         return getFloatValue(cursor, defValue);
     }
 
-
-    /****************************************************************************************************
-     Static helper method
-     ******************************************************************************************************/
-
     /**
      * Retrieve a boolean value from the preferences.
      *
@@ -298,6 +312,23 @@ public class SharedPreferencesResolver implements SharedPreferences {
     @Override
     public SharedPreferences.Editor edit() {
         return new EditorImp(context);
+    }
+
+    /**
+     * Checks whether the preferences contains a preference.
+     *
+     * @param key The name of the preference to check.
+     * @return Returns true if the preference exists in the preferences,
+     *         otherwise false.
+     */
+    @Override
+    @Deprecated
+    public boolean contains(String key) {
+        String path = getUriPath(URI_CONTAINS, key);
+        Log.d(TAG, "contains , path = " + path);
+
+        Cursor cursor = context.getContentResolver().query(BASE_URI.buildUpon().path(path).build(), null, null, null, null);
+        return getBooleanValue(cursor, false);
     }
 
     /**
@@ -344,18 +375,26 @@ public class SharedPreferencesResolver implements SharedPreferences {
     }
 
     /**
-     * Not implement . DO NOT call any time.
-     **/
-    @Override
+     * Retrieve all values from the preferences.
+     *
+     * <p>Note that you <em>must not</em> modify the collection returned
+     * by this method, or alter any of its contents.  The consistency of your
+     * stored data is not guaranteed if you do.
+     *
+     * @return Returns a map containing a list of pairs key/value representing
+     * the preferences.
+     *
+     * @throws NullPointerException
+     */
     @Deprecated
     public Map<String, ?> getAll() {
-        throw new UnsupportedOperationException();
+        String path = getUriPath(URI_QUERY_ALL);
+        Log.d(TAG, "getAll , path = " + path);
+
+        Cursor cursor = context.getContentResolver().query(BASE_URI.buildUpon().path(path).build(), null, null, null, null);
+        return getAllValue(cursor);
     }
 
-
-    /****************************************************************************************************
-     Deprecated method , this class is not really SharedPreference .
-     ******************************************************************************************************/
 
     /**
      * Not implement . DO NOT call any time.
@@ -367,14 +406,6 @@ public class SharedPreferencesResolver implements SharedPreferences {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implement . DO NOT call any time.
-     **/
-    @Override
-    @Deprecated
-    public boolean contains(String key) {
-        throw new UnsupportedOperationException();
-    }
 
     /****************************************************************************************************
      * class Editor implements SharedPreferences.Editor

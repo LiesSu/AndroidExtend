@@ -10,12 +10,15 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.OperationCanceledException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>A content provider for SharedPreferences  in multi process .
@@ -30,23 +33,21 @@ public class SharedPreferencesProvider extends ContentProvider
     static final String PREFERENCE_AUTHORITY = "com.liessu.andex.sharedmulti.SharedPreferencesProvider";
     static final Uri BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
     private static final String TAG = "SharedPrefProvider";
-    public static String SHARED_FILE_NAME = "SharedMultiPreferences";
-
     //Type names
     private static final String INT_TYPE = "integer";
     private static final String LONG_TYPE = "long";
     private static final String FLOAT_TYPE = "float";
     private static final String BOOLEAN_TYPE = "boolean";
     private static final String STRING_TYPE = "string";
-
     //Uris
     private static final String URI_ADD = "add";
     private static final String URI_DEL = "delete/key/*";
+    private static final String URI_CONTAINS = "contains/key/*";
     private static final String URI_CLEAR = "clear";
     private static final String URI_UPDATE = "update";
     private static final String URI_QUERY = "query/key/*/default/*/type/*";
+    private static final String URI_QUERY_ALL = "queryAll";
     private static final String URI_CHANGE = "change/key/*";
-
     //Uri matcher
     private static final int MATCH_DATA = 0x01;
     private static final int MATCH_ADD = 0x02;
@@ -54,7 +55,9 @@ public class SharedPreferencesProvider extends ContentProvider
     private static final int MATCH_CLEAR = 0x04;
     private static final int MATCH_UPDATE = 0x05;
     private static final int MATCH_QUERY = 0x06;
-
+    private static final int MATCH_QUERY_ALL = 0x08;
+    private static final int MATCH_CONTAINS = 0x09;
+    public static String SHARED_FILE_NAME = "SharedMultiPreferences";
     private Context context;
     private UriMatcher uriMatcher;
     private SharedPreferences sharedPreferences;
@@ -71,12 +74,14 @@ public class SharedPreferencesProvider extends ContentProvider
         if (uriMatcher == null) {
             context = getContext();
             //Construct UriMatcher
-            Log.d(TAG,"Authority is "+PREFERENCE_AUTHORITY);
+            Log.d(TAG, "Authority is " + PREFERENCE_AUTHORITY);
             uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
             uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_ADD, MATCH_ADD);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_QUERY_ALL, MATCH_QUERY_ALL);
             uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_CLEAR, MATCH_CLEAR);
             uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_UPDATE, MATCH_UPDATE);
             uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_DEL, MATCH_DEL);
+            uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_CONTAINS, MATCH_CONTAINS);
             uriMatcher.addURI(PREFERENCE_AUTHORITY, URI_QUERY, MATCH_QUERY);
 
             // To subscribe to SharedPreferences changes state
@@ -113,10 +118,12 @@ public class SharedPreferencesProvider extends ContentProvider
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        //  content://PREFERENCE_AUTHORITY/query/key/#/default/#/type/#
+        //  content://PREFERENCE_AUTHORITY/query/key/*/default/*/type/*
+        //  content://PREFERENCE_AUTHORITY/contains/key/*
+        //  content://PREFERENCE_AUTHORITY/querySet/key/*
 
         Log.d(TAG, "Query uri : " + uri.toString());
-        MatrixCursor cursor;
+        MatrixCursor cursor = null;
         switch (uriMatcher.match(uri)) {
             case MATCH_QUERY:
                 //Receive query key and type , type is needed.
@@ -148,9 +155,25 @@ public class SharedPreferencesProvider extends ContentProvider
                 }
                 rowBuilder.add(object);
                 break;
+
+            case MATCH_CONTAINS:
+                String keyContains = uri.getPathSegments().get(2);
+                cursor = new MatrixCursor(new String[]{keyContains});
+                MatrixCursor.RowBuilder rowBuilderContains = cursor.newRow();
+                rowBuilderContains.add(sharedPreferences.contains(keyContains));
+                break;
+
+            case MATCH_QUERY_ALL:
+                Map<String, ?> mapAll = sharedPreferences.getAll();
+                cursor = new MatrixCursor(new String[]{"key", "value"});
+                for (Map.Entry keyValue : mapAll.entrySet())
+                    cursor.addRow(new Object[]{keyValue.getKey(), keyValue.getValue()});
+                break;
+
             default:
                 throw new IllegalArgumentException("Unsupported uri " + uri);
         }
+        Log.d(TAG, cursor.toString());
         return cursor;
     }
 
@@ -289,7 +312,7 @@ public class SharedPreferencesProvider extends ContentProvider
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         //putXxxx(key,null) also can remove key
         //content://PREFERENCE_AUTHORITY/remove
-        //content://PREFERENCE_AUTHORITY/delete/key/#
+        //content://PREFERENCE_AUTHORITY/delete/key/*
 
         Log.d(TAG, "Clear SharedPreferences !");
         switch (uriMatcher.match(uri)) {
@@ -354,7 +377,7 @@ public class SharedPreferencesProvider extends ContentProvider
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        //content://PREFERENCE_AUTHORITY/change/key/#
+        //content://PREFERENCE_AUTHORITY/change/key/*
 
         //Notify shared preferences change to resolver .
         Uri changeUri = BASE_URI.buildUpon().path(getUriPath(URI_CHANGE, key)).build();
@@ -367,7 +390,7 @@ public class SharedPreferencesProvider extends ContentProvider
      * Create Uri
      *
      * @param path uri path
-     * @param args  param list
+     * @param args param list
      * @return path
      */
     private String getUriPath(String path, String... args) {
