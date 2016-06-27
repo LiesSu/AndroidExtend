@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.liessu.extender"
+<manifest package="com.liessu.andex.sample"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name=".DemoApplication"
+        android:name=".AndexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".ui.SharedMultiProcessActivity"
+            android:label="@string/title_activity_shared_multi_process"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:process=":SharedMulti">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
@@ -21,8 +34,8 @@
         </activity>
 
         <provider
-            android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
             android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+            android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
             android:exported="true"/>
     </application>
 

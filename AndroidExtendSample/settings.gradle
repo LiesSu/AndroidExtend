@@ -1,3 +1,3 @@
-include ':sample', ':SharedMultiClient', ':deviceadapterinfo'
+include ':sample'
 include ':andex'
 project(':andex').projectDir = new File('../andex')

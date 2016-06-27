@@ -4,4 +4,13 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <!-- font sizes -->
+    <dimen name="font_small_size">14sp</dimen>
+    <dimen name="font_middle_size">18sp</dimen>
+    <dimen name="font_middle_large_size">24sp</dimen>
+    <dimen name="font_large_size">24sp</dimen>
+    <dimen name="font_large_large_size">35sp</dimen>
+    <dimen name="font_extra_large_size">40sp</dimen>
+    <dimen name="font_max_large_size">85sp</dimen>
 </resources>

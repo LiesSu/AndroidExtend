@@ -142,7 +142,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
                 cursor.moveToNext();
             }
         }
-        Log.e(TAG , mapAll.toString());
+        Log.d(TAG , mapAll.toString());
         return mapAll;
     }
 

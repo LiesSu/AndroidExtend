@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="5dp"
+        android:gravity="left">
+        <TextView
+            android:id="@+id/shared_key_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SharedPreferences键"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_middle_size"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/shared_value_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end
+        "
+        android:text="SharedPreferences值"
+        android:textSize="@dimen/font_extra_large_size"/>
+
+</LinearLayout>
