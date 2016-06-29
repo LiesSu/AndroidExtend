@@ -1,4 +1,4 @@
-package com.liessu.andex.widget;
+package com.liessu.andex.widget.recycler.listener;
 
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.liessu.andex.widget;
+package com.liessu.andex.widget.recycler.item;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -108,8 +108,6 @@ public class SharedPreferencesResolver implements SharedPreferences {
                 default:
                     throw new IllegalArgumentException("Unsupported uri " + uri);
             }
-
-
         }
 
         /**
@@ -143,21 +141,21 @@ public class SharedPreferencesResolver implements SharedPreferences {
 
 
     /****************************************************************************************************
-     Static helper method
+     * Static helper method
      ******************************************************************************************************/
 
-    private static Map<String , ?> getAllValue(Cursor cursor){
-        if(cursor == null || cursor.isClosed())
+    private static Map<String, ?> getAllValue(Cursor cursor) {
+        if (cursor == null || cursor.isClosed())
             return null;
 
-        Map<String , String > mapAll = new HashMap<>();
-        if(cursor.moveToFirst()){
-            while (!cursor.isAfterLast()){
-                mapAll.put(cursor.getString(0),cursor.getString(1));
+        Map<String, String> mapAll = new HashMap<>();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                mapAll.put(cursor.getString(0), cursor.getString(1));
                 cursor.moveToNext();
             }
         }
-        Log.d(TAG , mapAll.toString());
+        Log.d(TAG, mapAll.toString());
         return mapAll;
     }
 
@@ -334,7 +332,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
      *
      * @param key The name of the preference to check.
      * @return Returns true if the preference exists in the preferences,
-     *         otherwise false.
+     * otherwise false.
      */
     @Override
     @Deprecated
@@ -379,7 +377,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
      * Create Uri
      *
      * @param path uri path
-     * @param args  param list
+     * @param args param list
      * @return path
      */
     private String getUriPath(String path, String... args) {
@@ -391,14 +389,13 @@ public class SharedPreferencesResolver implements SharedPreferences {
 
     /**
      * Retrieve all values from the preferences.
-     *
+     * <p/>
      * <p>Note that you <em>must not</em> modify the collection returned
      * by this method, or alter any of its contents.  The consistency of your
      * stored data is not guaranteed if you do.
      *
      * @return Returns a map containing a list of pairs key/value representing
      * the preferences.
-     *
      * @throws NullPointerException
      */
     @Deprecated
@@ -418,7 +415,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
     @Override
     @Deprecated
     public Set<String> getStringSet(String key, Set<String> defValues) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("SharedPreferencesResolver does not support String set.");
     }
 
 
@@ -599,7 +596,7 @@ public class SharedPreferencesResolver implements SharedPreferences {
         @Override
         @Deprecated
         public SharedPreferences.Editor putStringSet(String key, Set<String> values) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("SharedPreferencesResolver does not support String set.");
         }
     }
 }
