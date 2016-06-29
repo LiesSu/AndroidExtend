@@ -50,25 +50,19 @@
       android:exported="true"/&gt;
 </code></pre>
 
-<ol>
-<li>在server端直接使用SharedPreferences进行数据操作即可：</li>
-</ol>
+<p>4.在server端直接使用SharedPreferences进行数据操作即可：</p>
 
 <pre><code>SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
       SharedPreferencesProvider.SHARED_FILE_NAME, Context.MODE_PRIVATE);
 </code></pre>
 
-<ol>
-<li>在Client端实例化SharedPreferences时，使用SharedPreferencesResolver实例化便可以轻松地实现与server端数据的共享：</li>
-</ol>
+<p>5.在Client端实例化SharedPreferences时，使用SharedPreferencesResolver实例化便可以轻松地实现与server端数据的共享：</p>
 
 <pre><code>//SharedPreferencesResolver实现了SharedPreferences大部分接口，直接按照你的使用习惯使用即可
 SharedPreferencesResolver sharedPreferences = new SharedPreferencesResolver(context);
 </code></pre>
 
-<ol>
-<li>如果需要订阅SharedPreferences内的数据变化，做法与普通SharedPreferences别无二致：</li>
-</ol>
+<p>6.如果需要订阅SharedPreferences内的数据变化，做法与普通SharedPreferences别无二致：</p>
 
 <pre><code>@Override
 public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
