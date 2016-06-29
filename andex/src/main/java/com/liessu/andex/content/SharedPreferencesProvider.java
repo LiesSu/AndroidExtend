@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.liessu.andex.sharedmulti;
+package com.liessu.andex.content;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -25,15 +25,12 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.OperationCanceledException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>A content provider for SharedPreferences  in multi process .
