@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import com.liessu.andex.sample.AndexApplication;
 import com.liessu.andex.sample.R;
-import com.liessu.andex.span.ClickableSpanEx;
-import com.liessu.andex.span.SpannableStringBuilderEx;
+import com.liessu.andex.text.style.ClickableSpanEx;
+import com.liessu.andex.text.SpannableStringBuilderEx;
 
 
 /**

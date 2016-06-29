@@ -34,8 +34,8 @@
         </activity>
 
         <provider
-            android:name="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
-            android:authorities="com.liessu.andex.sharedmulti.SharedPreferencesProvider"
+            android:name="com.liessu.andex.content.SharedPreferencesProvider"
+            android:authorities="com.liessu.andex.content.SharedPreferencesProvider"
             android:exported="true"/>
     </application>
 

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.liessu.andex.span;
+package com.liessu.andex.text.style;
 
 
 import android.graphics.Color;

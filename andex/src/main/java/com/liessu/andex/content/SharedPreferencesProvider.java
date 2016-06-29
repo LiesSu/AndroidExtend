@@ -45,7 +45,7 @@ import java.util.Set;
 public class SharedPreferencesProvider extends ContentProvider
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     //Provider params
-    static final String PREFERENCE_AUTHORITY = "com.liessu.andex.sharedmulti.SharedPreferencesProvider";
+    static final String PREFERENCE_AUTHORITY = "com.liessu.andex.content.SharedPreferencesProvider";
     static final Uri BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
     private static final String TAG = "SharedPrefProvider";
     //Type names
@@ -135,6 +135,7 @@ public class SharedPreferencesProvider extends ContentProvider
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         //  content://PREFERENCE_AUTHORITY/query/key/*/default/*/type/*
         //  content://PREFERENCE_AUTHORITY/contains/key/*
+        //  content://PREFERENCE_AUTHORITY/querySet/key/*
 
         Log.d(TAG, "Query uri : " + uri.toString());
         MatrixCursor cursor = null;

@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class SharedMultiAdapter extends RecyclerView.Adapter<SharedMultiAdapter.SharedViewHolder> {
     private Context context;
+    //增加排序
     private List<Map.Entry<String , ?>> valueList;
 
     public SharedMultiAdapter() {

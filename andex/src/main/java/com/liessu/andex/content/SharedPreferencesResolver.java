@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.liessu.andex.sharedmulti;
+package com.liessu.andex.content;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,7 +38,7 @@ import java.util.Set;
  */
 public class SharedPreferencesResolver implements SharedPreferences {
     //Provider params
-    static final String PREFERENCE_AUTHORITY = "com.liessu.andex.sharedmulti.SharedPreferencesProvider";
+    static final String PREFERENCE_AUTHORITY = "com.liessu.andex.content.SharedPreferencesProvider";
     static final Uri BASE_URI = Uri.parse("content://" + PREFERENCE_AUTHORITY);
     private static final String TAG = "SharedPrefResolver";
     //Type names

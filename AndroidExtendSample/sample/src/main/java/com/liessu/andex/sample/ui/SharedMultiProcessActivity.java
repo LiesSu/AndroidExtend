@@ -15,7 +15,8 @@ import android.view.View;
 import com.liessu.andex.sample.AndexApplication;
 import com.liessu.andex.sample.R;
 import com.liessu.andex.sample.adapter.SharedMultiAdapter;
-import com.liessu.andex.sharedmulti.SharedPreferencesResolver;
+import com.liessu.andex.widget.RecyclerViewItemDecoration;
+import com.liessu.andex.content.SharedPreferencesResolver;
 
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class SharedMultiProcessActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate. After getAll:"+ System.currentTimeMillis());
         sharedMultiAdapter = new SharedMultiAdapter(context , mapValues);
         sharedMultiRecyclerView.setAdapter(sharedMultiAdapter);
+        sharedMultiRecyclerView.addItemDecoration(new RecyclerViewItemDecoration(context));
 
         if (fab != null) {
             fab.setOnClickListener(new View.OnClickListener() {

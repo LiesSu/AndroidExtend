@@ -39,8 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.liessu.andex.sample.AndexApplication;
-import com.liessu.andex.sharedmulti.SharedPreferencesProvider;
-import com.liessu.andex.span.ClickableSpanEx;
+import com.liessu.andex.content.SharedPreferencesProvider;
+import com.liessu.andex.text.style.ClickableSpanEx;
 import com.liessu.andex.sample.R;
 import com.liessu.andex.sample.utils.StringUtil;
 
