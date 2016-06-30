@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.github.moduth.blockcanary.BlockCanary;
+import com.liessu.andex.sample.utils.AndexBlockCanaryContext;
+
 /**
- * Created by Administrator on 2016/3/25.
+ *
  */
 public class AndexApplication extends Application{
     public static String TAG = "AndexApplication";
@@ -23,5 +26,6 @@ public class AndexApplication extends Application{
         super.onCreate();
         Log.i(TAG, "AndexApplication onCreate...");
         mContext = getApplicationContext();
+        BlockCanary.install(this, new AndexBlockCanaryContext()).start();
     }
 }

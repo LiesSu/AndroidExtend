@@ -128,9 +128,13 @@ public class SharedPreferencesResolver implements SharedPreferences {
     /**
      * Create SharedPreferencesResolver instance .
      *
-     * @param context context of application .
+     * @param context the application's context .
      */
     public SharedPreferencesResolver(Context context) {
+        if (context == null) {
+            throw new IllegalArgumentException("Context must not be null");
+        }
+
         this.context = context;
         this.sharedPreferences = this;
 
